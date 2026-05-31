@@ -1,0 +1,14 @@
+# Local environment files (contain credentials / sensitive configuration)
+.env
+
+# Terraform files
+.terraform/
+.terraform.lock.hcl
+*.tfstate*
+*.tfvars
+*.tfvars.json
+crash.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
