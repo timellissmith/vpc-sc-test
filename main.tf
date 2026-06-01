@@ -325,26 +325,26 @@ resource "google_access_context_manager_service_perimeter" "perimeter_a" {
       }
     }
 
-    # Ingress rule: Allow any cross-perimeter access if cross-perimeter is enabled
+    # Ingress rule: Allow cross-perimeter access ONLY from Project B
     dynamic "ingress_policies" {
       for_each = var.enable_cross_perimeter_access ? [1] : []
       content {
         ingress_from {
           identity_type = "ANY_IDENTITY"
           sources {
-            access_level = "*"
+            resource = "projects/${google_project.project_b.number}"
           }
         }
         ingress_to {
           operations {
             service_name = "*"
           }
-          resources = ["*"]
+          resources = ["projects/${google_project.project_a.number}"]
         }
       }
     }
 
-    # Egress rule: Allow any cross-perimeter egress if cross-perimeter is enabled
+    # Egress rule: Allow cross-perimeter egress ONLY to Project B
     dynamic "egress_policies" {
       for_each = var.enable_cross_perimeter_access ? [1] : []
       content {
@@ -355,7 +355,7 @@ resource "google_access_context_manager_service_perimeter" "perimeter_a" {
           operations {
             service_name = "*"
           }
-          resources = ["*"]
+          resources = ["projects/${google_project.project_b.number}"]
         }
       }
     }
@@ -410,7 +410,7 @@ resource "google_access_context_manager_service_perimeter" "perimeter_b" {
           operations {
             service_name = "*"
           }
-          resources = ["*"]
+          resources = ["projects/${google_project.project_a.number}"]
         }
       }
     }

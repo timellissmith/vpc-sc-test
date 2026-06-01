@@ -61,10 +61,13 @@ To enable secure querying, we define dynamic ingress/egress policies:
 
 1.  **Perimeter B Egress Rule**:
     *   **From**: `ANY_IDENTITY` (inside Project B).
-    *   **To**: `service_name = "*"` (covers `bigquery.googleapis.com`), `resources = ["*"]` (covers Project A).
+    *   **To**: `service_name = "*"` (covers `bigquery.googleapis.com`), `resources = ["projects/PROJECT_A_NUMBER"]` (strictly limited to Project A).
 2.  **Perimeter A Ingress Rule**:
-    *   **From**: `identity_type = "ANY_IDENTITY"`, `sources { access_level = "*" }` (covers incoming requests matching standard Access Context Manager rules).
-    *   **To**: `operations { service_name = "*" }`, `resources = ["*"]` (covers resources inside Project A).
+    *   **From**: `identity_type = "ANY_IDENTITY"`, `sources { resource = "projects/PROJECT_B_NUMBER" }` (strictly limited to requests originating from Project B).
+    *   **To**: `operations { service_name = "*" }`, `resources = ["projects/PROJECT_A_NUMBER"]` (strictly limited to resources inside Project A).
+3.  **Perimeter A Egress Rule**:
+    *   **From**: `identity_type = "ANY_IDENTITY"`.
+    *   **To**: `operations { service_name = "*" }`, `resources = ["projects/PROJECT_B_NUMBER"]` (to allow returning query responses/data back to Project B).
 
 > [!IMPORTANT]
 > **Why `ANY_IDENTITY` is required:**
